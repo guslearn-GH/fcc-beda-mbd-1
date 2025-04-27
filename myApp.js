@@ -1,10 +1,18 @@
-require("dotenv").config();
-var mongoose = require("mongoose");
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname + "/process.env") });
+const mongoClient = require("mongodb");
+const mongoose = require("mongoose");
 
-mongoose.connect(sample.env.MONGO_URI, {
+mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
+// const client = new mongoClient.MongoClient(process.env.MONGO_URI);
+// async function run() {
+//   try {
+//     await client.connect();
+//     console.log("Successful connection!!!");
 
 let Person;
 
@@ -55,6 +63,14 @@ const queryChain = (done) => {
 
   done(null /*, data*/);
 };
+//   } catch (err) {
+//     console.log(err.stack);
+//   } finally {
+//     await client.close(console.dir);
+//   }
+// }
+
+// run().catch(console.dir);
 
 /** **Well Done !!**
 /* You completed these challenges, let's go celebrate !
