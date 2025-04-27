@@ -1,10 +1,27 @@
-require("dotenv").config();
-var mongoose = require("mongoose");
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname + "/process.env") });
+const mongoose = require("mongoose");
 
-mongoose.connect(sample.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+let EmailModel = require('./email')
+
+
+
+// try {
+//   mongoose.connect(
+//     process.env.MONGO_URI,
+//     {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//     },
+//     () => console.log("connected")
+//   );
+// } catch (err) {
+//   console.log("could not connect");
+// }
+
+// const dbConnection = mongoose.connection;
+// dbConnection.on("error", (err) => console.log(`Connection error ${err}`));
+// dbConnection.once("open", () => console.log("Connected to DB!"));
 
 let Person;
 
@@ -55,7 +72,6 @@ const queryChain = (done) => {
 
   done(null /*, data*/);
 };
-
 /** **Well Done !!**
 /* You completed these challenges, let's go celebrate !
  */
