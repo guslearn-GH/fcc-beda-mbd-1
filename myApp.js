@@ -2,31 +2,46 @@ const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname + "/process.env") });
 const mongoose = require("mongoose");
 
-let EmailModel = require('./email')
-
-
-
-// try {
-//   mongoose.connect(
-//     process.env.MONGO_URI,
-//     {
-//       useNewUrlParser: true,
-//       useUnifiedTopology: true,
-//     },
-//     () => console.log("connected")
-//   );
-// } catch (err) {
-//   console.log("could not connect");
-// }
+try {
+  mongoose.connect(
+    process.env.MONGO_URI,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    },
+    () => console.log("connected")
+  );
+} catch (err) {
+  console.log("could not connect");
+}
 
 // const dbConnection = mongoose.connection;
 // dbConnection.on("error", (err) => console.log(`Connection error ${err}`));
-// dbConnection.once("open", () => console.log("Connected to DB!"));
+// dbConnection.once("open", () => {
+//   console.log("Connected to DB!");
+// });
 
-let Person;
+let personSchema = new mongoose.Schema({
+  nameid: String,
+  age: Number,
+  favoriteFoods: [String],
+});
 
+//let PersonModel =
+let Person = mongoose.model("Person", personSchema);
 const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+  var mrWrld = new Person({
+    nameid: "Mr. World",
+    age: 100,
+    favoriteFoods: ["Ramen", "Bacon"],
+  });
+
+  mrWrld.save(function (err, data) {
+    if (err) {
+      return console.error(err);
+    }
+    done(null, data);
+  });
 };
 
 const createManyPeople = (arrayOfPeople, done) => {
