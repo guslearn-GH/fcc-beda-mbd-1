@@ -10,117 +10,124 @@ dbConnection.once("open", () => {
   console.log("connected!!!");
 });
 
-// const Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-// const personSchema = Schema({
-//   name: String,
-//   age: String,
-//   favoriteFoods: [String],
-// });
+const personSchema = Schema({
+  name: { type: String, required: true },
+  age: { type: Number, required: true },
+  favoriteFoods: [{ type: String }],
+});
 
-let PersonModel = require("./person");
-let Person = new PersonModel();
-console.log(Person);
+let Person = new mongoose.model("Person", personSchema);
 
 const createAndSavePerson = (done) => {
-  // console.log("POST? 0");
-  // var pal = new Person({
-  //   name: "PAL",
-  //   age: 10,
-  //   favortieFoods: ["ramen", "bacon"],
-  // });
-  // console.log("POST? 1");
-  // pal.save().then(function (err, data) {
-  //   console.log("POST? 2");
-  //   if (err) {
-  //     console.log("problem here???--YES");
-  //     console.log(err);
-  //     console.log(data);
-  //     return console.error(err);
-  //   }
-  //   console.log("POST? 3");
-  //   done(null, data);
-  // });
-  // if (dbConnection.readyState == 1) {
-  //   var prms = pal.save(); //returns Promise
-  //   if (!prms) {
-  //     return console.log("problem with saving person");
-  //   } else {
-  //     return console.log("person was saved!!!");
-  //   }
-  // } else {
-  //   return console.log("Not connected!!!");
-  // }
-  // pal
-  //   .save()
-  //   .then((data) => {
-  //     console.log("PASS!!!");
-  //     console.log(data);
-  //     done(null, data);
-  //   })
-  //   .catch((err) => {
-  //     console.log("FAIL!!!");
-  //     console.error(err);
-  //     done(err);
-  //   });
-  done(null /*, data*/);
+  console.log("Create and save");
+  var psn = new Person({
+    name: "dude",
+    age: 111,
+    favoriteFoods: ["ramen", "bacon"],
+  });
+  psn.save(function (err, data) {
+    if (err) return console.error(err);
+    done(null, data);
+  });
 };
 
+var arrayOfPeople = [
+  { name: "dude0", age: 110, favoriteFoods: ["ramen0", "bacon0"] },
+  { name: "dude1", age: 111, favoriteFoods: ["ramen1", "bacon1"] },
+  { name: "dude2", age: 112, favoriteFoods: ["ramen2", "bacon2"] },
+];
+
 const createManyPeople = (arrayOfPeople, done) => {
-  // for (var p in arrayOfPeople) {
-  //   var addPerson = new Person(p);
-  //   addPerson
-  //     .save()
-  //     .then((data) => {
-  //       console.log(data);
-  //       done(null, data);
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //       done(err);
-  //     });
-  // }
-  done(null /*, data*/);
+  Person.create(arrayOfPeople, function (err, data) {
+    if (err) return console.error(err);
+    done(null, data);
+  });
 };
 
 const findPeopleByName = (personName, done) => {
-  done(null /*, data*/);
+  var query = { name: personName };
+  Person.find(query, function (err, data) {
+    if (err) return console.error(err);
+    done(null, data);
+  });
 };
 
 const findOneByFood = (food, done) => {
-  done(null /*, data*/);
+  var query = { favoriteFoods: [food] };
+  Person.findOne(query, function (err, data) {
+    if (err) return console.error(err);
+    done(null, data);
+  });
 };
 
 const findPersonById = (personId, done) => {
-  done(null /*, data*/);
+  Person.findById(personId, function (err, data) {
+    if (err) return console.error(err);
+    done(null, data);
+  });
 };
 
 const findEditThenSave = (personId, done) => {
   const foodToAdd = "hamburger";
-
-  done(null /*, data*/);
+  console.log(personId);
+  Person.findById(personId, function (err, data) {
+    if (err) return console.error(err);
+    console.log(data);
+    data.favoriteFoods.push(foodToAdd);
+    data.save(function (err2, data2) {
+      if (err2) return console.error(err2);
+      done(null, data2);
+    });
+  });
 };
 
 const findAndUpdate = (personName, done) => {
+  console.log(personName);
+  var query = { name: personName };
   const ageToSet = 20;
-
-  done(null /*, data*/);
+  Person.findOne(
+    query,
+    function (err, data) {
+      if (err) return console.error(err);
+      console.log(data);
+      data.age = ageToSet;
+      data.save(function (err2, data2) {
+        if (err2) return console.error(err2);
+        done(null, data2);
+      });
+    },
+    { new: true }
+  );
 };
 
 const removeById = (personId, done) => {
-  done(null /*, data*/);
+  Person.findByIdAndRemove(personId, (err, removedDoc) => {
+    if (err) return console.log(err);
+    done(null, removedDoc);
+  });
 };
 
 const removeManyPeople = (done) => {
   const nameToRemove = "Mary";
-
-  done(null /*, data*/);
+  Person.remove({ name: nameToRemove }, (err, removedDocs) => {
+    if (err) return console.log(err);
+    done(null, removedDocs);
+  });
 };
 
 const queryChain = (done) => {
   const foodToSearch = "burrito";
-
-  done(null /*, data*/);
+  Person.find({ favoriteFoods: foodToSearch })
+    .sort("name")
+    .limit(2)
+    .select("-age")
+    .exec((err, data) => {
+      if (err) return console.error(err);
+      console.log(data);
+      done(null, data);
+    });
 };
 /** **Well Done !!**
 /* You completed these challenges, let's go celebrate !
