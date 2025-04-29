@@ -1,7 +1,7 @@
-require("dotenv").config();
-var mongoose = require("mongoose");
-
-mongoose.connect(sample.env.MONGO_URI, {
+const path = require("path");
+require("dotenv").config(__dirname + "/process.env");
+const mongoose = require("mongoose");
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -55,7 +55,6 @@ const queryChain = (done) => {
 
   done(null /*, data*/);
 };
-
 /** **Well Done !!**
 /* You completed these challenges, let's go celebrate !
  */
